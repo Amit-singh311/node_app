@@ -7,17 +7,12 @@ var http          = require('http');
 var https         = require('https');
 var url           = require('url');
 var stringDecoder = require('string_decoder').StringDecoder;
-var config        = require('./config.js');
+var config        = require('./lib/config.js');
 var fs            = require('fs');
 var _data         = require('./lib/data');
 var handlers      = require('./lib/handlers');
+var helpers       = require('./lib/helpers');
 //console.log(_data);
-
-//testing
-// @TODO delete this
-_data.delete('test', 'newfile', function(err) {
-	console.log('this was an error ', err);
-});
 
 //The httpserver should respond with a string
 var httpServer = http.createServer(function(req,res) {
@@ -75,7 +70,7 @@ var unifiedServer =  function(req, res) {
 	        	'queryString' : queryString,
 	        	'method'      : method,
 	        	'headers'     : headers,
-	        	'payload'     : buffer  
+	        	'payload'     : helpers.parseJsonToObject(buffer)  
 	        };
 
 	        chosenHandler(data, function(statuscode, payload) {
@@ -105,5 +100,6 @@ var unifiedServer =  function(req, res) {
 
 //Define a router
 var router = {
-	'ping' : handlers.ping
+	'ping' : handlers.ping,
+	'users': handlers.users
 };
